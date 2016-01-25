@@ -53,7 +53,7 @@ sed -i 's#<VirtualHost \*:80>#<VirtualHost \*:8000>#' $APACHE_CONFIG_FILE
 sed -i 's/Listen 80/Listen \*:8000/' /etc/apache2/ports.conf
 
 sed -i "/Listen \*:8000/a \
-NameVirtualHost \*:8000" /etc/apache2/ports.conf 
+NameVirtualHost \*:8000" /etc/apache2/ports.conf
 
 read -d '' APACHE_CONFIG << APACHE_CONFIG_TEXT
 	ServerAlias islandora-vagrant
@@ -115,6 +115,14 @@ service apache2 restart
 
 # sites/default/files ownership
 chown -hR www-data:www-data "$DRUPAL_HOME"/sites/default/files
+
+# Install the REUNA/Biodiversidad template
+if [ ! -d "$DRUPAL_HOME"/sites/all/themes ]; then
+  mkdir -p "$DRUPAL_HOME"/sites/all/themes
+fi
+cd "$DRUPAL_HOME"/sites/all/themes
+git clone https://github.com/reuna/biodiversityreuna2
+chmod -hR www-data:www-data "$DRUPAL_HOME"/sites/all/themes
 
 # Run cron
 cd "$DRUPAL_HOME"/sites/all/modules
